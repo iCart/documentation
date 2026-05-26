@@ -2,6 +2,52 @@
 Belgium
 =======
 
+.. _localizations_belgium/configuration/modules:
+
+Modules
+=======
+
+The following modules are installed automatically with the Belgian localization:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 25 25 50
+
+   * - Name
+     - Technical name
+     - Description
+   * - :guilabel:`Belgium - Accounting`
+     - `l10n_be`
+     - Belgian :ref:`fiscal localization package <fiscal_localizations/packages>`, complete with
+       the Belgian chart of accounts, taxes, tax report, and fiscal positions
+   * - :guilabel:`Belgium - Accounting Reports`
+     - `l10n_be_reports`
+     - Module providing Belgian accounting reports
+   * - :guilabel:`Belgium - Accounting Reports - SMS`
+     - `l10n_be_report_sms`
+     - Bridge module between Belgian accounting and SMS
+   * - :guilabel:`Belgium - Accounting Reports Client Nihil`
+     - `l10n_be_reports_client_nihil`
+     - Extension for accouting returns in Belgium
+   * - :guilabel:`Belgian Intervat & Myminfin Edi`
+     - `l10n_be_intervat`
+     - Integration with Intervat and MyMinFin APIs, allowing to send and receive electronic VAT
+       declarations
+   * - :guilabel:`Belgium - Import SODA files`
+     - `l10n_be_soda`
+     - Module to import SODA files
+   * - :guilabel:`Belgium - Import Bank CODA Statements`
+     - `l10n_be_coda`
+     - Module to import CODA bank statements
+   * - :guilabel:`Belgium - Fiscal Categories Data`
+     - `l10n_be_fiscal_categories`
+     - Fiscal categories data
+
+.. note::
+   In some cases, such as when upgrading to a version with additional modules, it is possible that
+   modules may not be installed automatically. Any missing modules can be manually :ref:`installed
+   <general/install>`.
+
 .. _belgium/configuration:
 
 Configuration
@@ -23,7 +69,7 @@ Chart of accounts
 You can reach the :guilabel:`Chart of accounts` by going to :menuselection:`Accounting -->
 Configuration --> Accounting: Chart of Accounts`.
 
-The Belgian chart of accounts includes pre-configured accounts as described in the :abbr:`PCMN(Plan
+The Belgian chart of accounts includes pre-configured accounts as described in the :abbr:`PCMN (Plan
 Comptable Minimum Normalisé)`. To add a new account, click :guilabel:`New`. A new line appears. Fill
 it in, click :guilabel:`Save`, and then :guilabel:`Setup` to configure it further.
 
@@ -79,9 +125,52 @@ the tax amount and allocates it to the corresponding accounts based on the tax r
    .. image:: belgium/deductible-tax.png
       :alt: Example of not-fully deductible tax
 
+Vehicle tax deduction
+---------------------
+
+.. note::
+   To see the tax deductibility of a vehicle, the **Belgium - Disallowed Expenses Fleet**
+   (`l10n_be_account_fiscal_categories_fleet`) module must be :doc:`installed
+   <../../general/apps_modules>`.
+
+A vehicle's tax deductibility rate varies depending on its type (car or bicycle) and several
+factors, such as fuel type, CO2 emissions, engine power, etc.
+
+To view the **tax deductibility percentage** for a specific vehicle, open the **Fleet** app,
+navigate to :menuselection:`Configuration --> Models`, and select a vehicle model. Locate the
+:guilabel:`Tax Deduction` field, which is found under the :guilabel:`Engine` section for cars, or
+the :guilabel:`Vehicle Information` section for bicycles.
+
+.. important::
+   The :guilabel:`Tax Deduction` field is strictly **informative** and is computed automatically
+   based on the vehicle's specifications. It is **not** used for any automated calculations within
+   the **Accounting** app and should not be confused with the :ref:`tax rate deductibility
+   <belgium/non-deductible>` used on :ref:`tax grids <accounting/tax-returns/tax-grids>`. Instead,
+   your accountant can reference this field to manually apply the correct deductible rate to
+   invoices or disallowed expenses.
+
 .. seealso::
-  - :doc:`Taxes <../accounting/taxes>`
-  - :doc:`../accounting/reporting/tax_returns`
+   :ref:`Vehicle models <fleet/models>`
+
+Intervat
+--------
+
+.. note::
+   - Make sure the :guilabel:`Belgian Intervat & Myminfi Edi` module is :doc:`installed
+     <../../general/apps_modules>` on your database.
+   - When submitting your tax returns, make sure to use XML or VAT format files. These are the only
+     file formats accepted by Intervat.
+
+Intervat is the electronic platform used to submit tax returns to the Belgian tax authorities. You
+can file your returns directly from Odoo using the Intervat integration.
+
+To set this up, open the **Accounting** app, go to :menuselection:`Configuration --> Settings`, and
+scroll down to the :guilabel:`Taxes` section. From there, select a :guilabel:`Server Mode`, enter
+your :guilabel:`VAT Number`, and select an :guilabel:`Accounting` firm if applicable.
+
+.. seealso::
+   - :doc:`Taxes <../accounting/taxes>`
+   - :doc:`../accounting/reporting/tax_returns`
 
 .. _belgium/reports:
 
@@ -108,30 +197,38 @@ report and selecting its Belgian version: **(BE)**.
 
 .. _belgium/disallowed-expenses:
 
-Disallowed expenses report
---------------------------
+Disallowed expenses
+-------------------
 
-**Disallowed expenses** are expenses that can be deducted from your accounting result but not from
-your fiscal result.
+.. note::
+   Fiscal categories are only accessible when :doc:`developer mode <../../general/developer_mode>`
+   is enabled.
 
-The **disallowed expenses report** is available by going to :menuselection:`Accounting --> Reporting
---> Management: Disallowed Expenses`. It allows financial results in real-time, and periodic
-changes. This report is generated based on the **disallowed expenses categories** that you can reach
-by going to :menuselection:`Accounting --> Configuration --> Management: Disallowed Expenses
-Categories`. Some categories already exist by default but do not have any rates. Click on
-:guilabel:`Set Rates` to update a specific category.
+The **Fiscal Report** tracks disallowed expenses and is available by navigating to the
+**Accounting** app and going to :menuselection:`Reporting --> Fiscal Report`. This report provides
+real-time financial results and allows for periodic adjustments.
+
+The report is generated based on **fiscal categories**, which can be managed by going to
+:menuselection:`Configuration --> Fiscal Categories`. While several default categories are provided,
+you can create new ones by clicking :guilabel:`New`. Categories themselves do not hold rates.
+Instead, you must link a category to an account by opening the fiscal category and specifying the
+target accounts in the :guilabel:`Related Account(s)` field. Optionally, you can restrict the
+category to a specific company by selecting it from the :guilabel:`Company` drop-down menu.
 
 .. tip::
-  - You can add multiple rates for various dates. In that case, the rate used to calculate the
-    expense depends on the date at which it is calculated, and the rate set for that date.
-  - If you have the **Fleet** app installed, tick the :guilabel:`Car Category` box when applicable.
-    This makes the vehicle mandatory while booking a vendor bill.
+   If the **Fleet** app is installed, check the :guilabel:`Requires a Vehicle` box where applicable.
+   This makes selecting a vehicle mandatory when logging a vendor bill.
 
-To link a disallowed expenses category with a specific account, go to :menuselection:`Accounting -->
-Configuration --> Accounting: Chart of Accounts`. Find the account you want, and click on
-:guilabel:`Setup`. Add the :guilabel:`Disallowed Expense category` in the :guilabel:`Disallowed
-Expenses` field. From now, when an expense is created with this account, the disallowed expense is
-calculated based on the rate mentioned in the :guilabel:`Disallowed Expense category`.
+To set a rate on an account, go to :menuselection:`Configuration --> Chart of Accounts` and open the
+account linked in the previous step. Under the :guilabel:`Fiscal Rates` tab, click :guilabel:`Add a
+line` and enter a :guilabel:`Start Date` and :guilabel:`Fiscal Rate (%)`.
+
+Moving forward, whenever an expense is recorded using this account, the disallowed expense amount is
+automatically calculated based on the rate specified in the :guilabel:`Fiscal Rates` tab.
+
+.. tip::
+    You can add multiple rates for different dates. The system will automatically apply the correct
+    rate based on the date the expense is recorded.
 
 Let's take an example reflecting **restaurant** and **car expenses**.
 
@@ -140,31 +237,33 @@ Let's take an example reflecting **restaurant** and **car expenses**.
 Restaurant expenses
 ~~~~~~~~~~~~~~~~~~~
 
-In Belgium, 69% of **restaurant** expenses are deductible. Create a new **disallowed expenses
-category** and set both :guilabel:`Related Account(s)` and :guilabel:`Current Rate`.
+In Belgium, 69% of **restaurant** expenses are deductible. To configure this, create a new **fiscal
+category** and specify its :guilabel:`Related Account(s)` and :guilabel:`Fiscal rates`.
 
 .. _belgium/vehicle-split:
 
 Car expenses: vehicle split
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In Belgium, the deductible percentage varies from car to car and, therefore, should be indicated for
-each vehicle. To do so, open :menuselection:`Fleet` and select a vehicle. In the :guilabel:`Tax
-info` tab, go to the :guilabel:`Deductibility Rates` section and click on :guilabel:`Add a
-line`. Add a :guilabel:`Start Date` and a :guilabel:`%`. The amounts go in the same account for all
-car expenses.
+In Belgium, the deductible percentage varies per car and must be defined for each individual
+vehicle. To do this, open the :menuselection:`Fleet` app and select a vehicle. In the :guilabel:`Tax
+info` tab, locate the :guilabel:`Fiscality` section and click :guilabel:`Add a line` under the
+:guilabel:`Fiscal Deductibility` field. Add a :guilabel:`Start Date` and a :guilabel:`Non-deductible
+(%)`. The expenses for all cars will still be recorded to the same account.
 
-When you create a bill for car expenses, you can link each expense to a specific car by filling the
-:guilabel:`Vehicle` column, so the right percentage is applied.
+When creating a vendor bill for car expenses, you can link each expense line to a specific car by
+filling in the :guilabel:`Vehicle` column (accessible under :guilabel:`Amount`
+:icon:`oi-settings-adjust`). This ensures the correct non-deductible percentage is applied.
 
 .. image:: belgium/car-bill.png
-   :alt: Disallowed expenses categories
+   :alt: Disallowed expenses of car bill
 
-The :guilabel:`vehicle split` option available in the disallowed expenses report allows you to see
-the rate and disallowed amount for each car.
+To view the specific rates and disallowed amounts calculated for each car, enable the
+:guilabel:`vehicle split` filter (located under :icon:`fa-sliders` :guilabel:`Posted Entries`)
+within the fiscal report.
 
 .. image:: belgium/vehicle-split.png
-   :alt: Disallowed expenses categories
+   :alt: Disallowed expenses for cars in fiscal report
 
 .. _belgium/forms:
 
