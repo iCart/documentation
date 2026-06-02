@@ -116,6 +116,84 @@ section of the :guilabel:`Style` tab. For example, you can:
 
 Once you have made the desired changes, click :guilabel:`Save`.
 
+Prefill form fields with URL parameters
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Form fields can be automatically filled using URL query parameters. This is useful for marketing
+campaigns, personalized links, or any scenario where you want to pre-populate a form for the
+visitor.
+
+.. _website/building_blocks/form/sharable:
+
+Enable sharable links
+*********************
+
+To generate a sharable link for a form:
+
+#. Open the website editor and click the form block.
+#. In the :guilabel:`Style` tab, under the :guilabel:`Form` section, enable the :guilabel:`Sharable` toggle option.
+#. A :guilabel:`Sharable Link` field appears with a unique fragment identifier (e.g., ``/#form-abc123``).
+#. Click the :icon:`fa-clipboard` (:guilabel:`Copy Link`) button to copy the link to your
+   clipboard.
+
+.. note::
+   - If a page contains multiple forms, only the form whose ID matches the URL fragment receives
+     the prefilled values. Forms that do not match the fragment ignore the query parameters.
+   - If the URL has no fragment, query parameters apply to **every** form on the page.
+
+.. _website/building_blocks/form/field-name:
+
+Identify field names
+********************
+
+Each form field has a **field name** used as the query parameter key in the URL. To find it:
+
+#. Open the website editor and click a field in the form.
+#. In the :guilabel:`Style` tab, under the :guilabel:`Field` section, locate the read-only
+   :guilabel:`Field Name` value.
+#. Use this exact name as the query parameter key when constructing the URL.
+
+.. _website/building_blocks/form/construct-url:
+
+Construct the prefill URL
+*************************
+
+Append query parameters to the sharable link using the format ``?field_name=value``. Separate
+multiple fields with ``&``.
+
+.. important::
+   Query parameters must appear **before** the ``#`` fragment, never after. ``?field_name=value#form-id``
+   is valid; ``#form-id?field_name=value`` is not, the parameters are silently ignored.
+
+.. example::
+   For a contact form with the sharable link ``https://example.com/contact-us#form-abc123``,
+   prefill the :guilabel:`Name` and :guilabel:`Email` fields:
+
+   .. code-block:: text
+
+      https://example.com/contact-us?name=John+Doe&email=john@example.com#form-abc123
+
+   When a visitor opens this URL, the form fields are automatically populated with the provided
+   values.
+
+For :guilabel:`Selection`, :guilabel:`Radio`, and :guilabel:`Checkbox` fields, the parameter value
+must match one of the available option values exactly. Unmatched values are ignored. For single
+boolean checkboxes, the accepted truthy values are ``true``, ``1``, and ``on``; any other value
+leaves the checkbox unchecked.
+
+.. tip::
+   Combine prefill parameters with :doc:`link tracker <../reporting/link_tracker>` UTM parameters to
+   track the effectiveness of personalized links in marketing campaigns.
+
+.. note::
+   - Values provided by the backend always take precedence over URL parameters. This includes
+     server-side ``data-for`` values (e.g., on the Contact Us form) and the ``data-fill-with``
+     attribute that prefills name, phone, and email from the logged-in user's contact record.
+   - As a defense-in-depth measure, ``<script>`` blocks and HTML-looking tags are stripped from
+     parameter values before they are written to the form. Server-side escaping remains the
+     primary protection.
+   - Spaces in values can be encoded as ``+`` or ``%20``.
+
 Add an Odoo contact form on a non-Odoo website
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
