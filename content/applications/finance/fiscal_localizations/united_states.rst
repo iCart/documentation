@@ -43,6 +43,8 @@ localization for the Odoo **Accounting** app.
 .. image:: united_states/us-l10n-package.png
    :alt: The Package field with the United States package selected.
 
+.. _l10n_us/optional-modules:
+
 Optional modules
 ----------------
 
@@ -179,7 +181,7 @@ View, edit, and sort accounts
 
 Access the *Chart of Accounts* dashboard in Odoo by navigating to :menuselection:`Accounting app -->
 Configuration --> Accounting: Chart of Accounts`.
-
+label
 From the :guilabel:`Chart of Accounts` dashboard, create new accounts by clicking the
 :guilabel:`New` button in the top-left corner of the dashboard and :ref:`filling in the
 corresponding form <chart-of-account/create>`. Search and sort through existing accounts by using
