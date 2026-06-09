@@ -29,6 +29,12 @@ appear in the :guilabel:`Devices` list of the IoT app.
 .. note::
    Printers can take up to two minutes to appear in the IoT app's :guilabel:`Devices` list.
 
+.. tip::
+   To test that the printer is working properly, go to the IoT app, click the :ref:`IoT system's
+   card <iot/connect/IoT-form>` then click on the printer device.
+   Click on the :guilabel:`Test` button. If the printer is working properly, a test page should
+   print out.
+
 Link a printer
 ==============
 
